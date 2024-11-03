@@ -250,7 +250,7 @@ def test_256_coin_flips():
 
 
 
-def test_128_dice_rolls():
+def test_128_coin_flips():
     """ 128 coin flips input should yield the same 12-word mnemonic as iancoleman.io/bip39 """
     # Check "Show entropy details", paste in coin flip sequence, click "Binary", select "Mnemonic Length" as "12 Words"
     coin_flips = "10101010101011101100010000000011001000110000000000110000000010011100000000000000100000000001100000011100101100100001001100110010"
