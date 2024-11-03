@@ -12,7 +12,7 @@ from seedsigner.controller import Controller
 from seedsigner.gui.components import FontAwesomeIconConstants, GUIConstants, SeedSignerIconConstants
 from seedsigner.gui.screens import (RET_CODE__BACK_BUTTON, ButtonListScreen, WarningScreen)
 from seedsigner.gui.screens.tools_screens import (ToolsCalcFinalWordDoneScreen, ToolsCalcFinalWordFinalizePromptScreen,
-    ToolsCalcFinalWordScreen, ToolsCoinFlipEntryScreen, ToolsDiceEntropyEntryScreen, ToolsImageEntropyFinalImageScreen,
+    ToolsCalcFinalWordScreen, ToolsCoinFlipEntryScreen, ToolsDiceEntropyEntryScreen, ToolsCoinEntropyEntryScreen, ToolsImageEntropyFinalImageScreen,
     ToolsImageEntropyLivePreviewScreen, ToolsAddressExplorerAddressTypeScreen)
 from seedsigner.helpers import embit_utils, mnemonic_generation
 from seedsigner.models.encode_qr import GenericStaticQrEncoder
@@ -28,12 +28,13 @@ logger = logging.getLogger(__name__)
 class ToolsMenuView(View):
     IMAGE = (" New seed", FontAwesomeIconConstants.CAMERA)
     DICE = ("New seed", FontAwesomeIconConstants.DICE)
+    COIN = ("New seed", FontAwesomeIconConstants.COINS)
     KEYBOARD = ("Calc 12th/24th word", FontAwesomeIconConstants.KEYBOARD)
     ADDRESS_EXPLORER = "Address Explorer"
     VERIFY_ADDRESS = "Verify address"
 
     def run(self):
-        button_data = [self.IMAGE, self.DICE, self.KEYBOARD, self.ADDRESS_EXPLORER, self.VERIFY_ADDRESS]
+        button_data = [self.IMAGE, self.DICE, self.COIN, self.KEYBOARD, self.ADDRESS_EXPLORER, self.VERIFY_ADDRESS]
 
         selected_menu_num = self.run_screen(
             ButtonListScreen,
@@ -50,6 +51,9 @@ class ToolsMenuView(View):
 
         elif button_data[selected_menu_num] == self.DICE:
             return Destination(ToolsDiceEntropyMnemonicLengthView)
+
+        elif button_data[selected_menu_num] == self.COIN:
+            return Destination(ToolsCoinEntropyMnemonicLengthView)
 
         elif button_data[selected_menu_num] == self.KEYBOARD:
             return Destination(ToolsCalcFinalWordNumWordsView)
@@ -229,6 +233,58 @@ class ToolsDiceEntropyEntryView(View):
 
         # Add the mnemonic as an in-memory Seed
         seed = Seed(dice_seed_phrase, wordlist_language_code=self.settings.get_value(SettingsConstants.SETTING__WORDLIST_LANGUAGE))
+        self.controller.storage.set_pending_seed(seed)
+
+        # Cannot return BACK to this View
+        return Destination(SeedWordsWarningView, view_args={"seed_num": None}, clear_history=True)
+
+
+
+"""****************************************************************************
+    Coin flips Views
+****************************************************************************"""
+class ToolsCoinEntropyMnemonicLengthView(View):
+    def run(self):
+        TWELVE = f"12 words ({mnemonic_generation.COIN__NUM_FLIPS__12WORD} flips)"
+        TWENTY_FOUR = f"24 words ({mnemonic_generation.COIN__NUM_FLIPS__24WORD} flips)"
+
+        button_data = [TWELVE, TWENTY_FOUR]
+        selected_menu_num = ButtonListScreen(
+            title="Mnemonic Length",
+            is_bottom_list=True,
+            is_button_text_centered=True,
+            button_data=button_data,
+        ).display()
+
+        if selected_menu_num == RET_CODE__BACK_BUTTON:
+            return Destination(BackStackView)
+
+        elif button_data[selected_menu_num] == TWELVE:
+            return Destination(ToolsCoinEntropyEntryView, view_args=dict(total_flips=mnemonic_generation.COIN__NUM_FLIPS__12WORD))
+
+        elif button_data[selected_menu_num] == TWENTY_FOUR:
+            return Destination(ToolsCoinEntropyEntryView, view_args=dict(total_flips=mnemonic_generation.COIN__NUM_FLIPS__24WORD))
+
+
+
+class ToolsCoinEntropyEntryView(View):
+    def __init__(self, total_flips: int):
+        super().__init__()
+        self.total_flips = total_flips
+    
+
+    def run(self):
+        ret = ToolsCoinEntropyEntryScreen(
+            return_after_n_chars=self.total_flips,
+        ).display()
+
+        if ret == RET_CODE__BACK_BUTTON:
+            return Destination(BackStackView)
+
+        coin_seed_phrase = mnemonic_generation.generate_mnemonic_from_coin_flips(ret)
+
+        # Add the mnemonic as an in-memory Seed
+        seed = Seed(coin_seed_phrase, wordlist_language_code=self.settings.get_value(SettingsConstants.SETTING__WORDLIST_LANGUAGE))
         self.controller.storage.set_pending_seed(seed)
 
         # Cannot return BACK to this View
