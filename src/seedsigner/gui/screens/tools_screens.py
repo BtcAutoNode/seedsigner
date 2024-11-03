@@ -165,6 +165,38 @@ class ToolsDiceEntropyEntryScreen(KeyboardScreen):
 
 
 @dataclass
+class ToolsCoinEntropyEntryScreen(KeyboardScreen):
+    def __post_init__(self):
+        # Override values set by the parent class
+        self.title = f"Coin Flip 1/{self.return_after_n_chars}"
+
+        # Specify the keys in the keyboard
+        self.rows = 1
+        self.cols = 2
+        self.keyboard_font_name = GUIConstants.ICON_FONT_NAME__FONT_AWESOME
+        self.keyboard_font_size = None  # Force auto-scaling to Key height
+        self.keys_charset = "".join([
+            FontAwesomeIconConstants.COIN_T,
+            FontAwesomeIconConstants.COIN_H,
+        ])
+
+        # Map Key display chars to actual output values
+        self.keys_to_values = {
+            FontAwesomeIconConstants.COIN_H: "1",
+            FontAwesomeIconConstants.COIN_T: "0",
+        }
+
+        # Now initialize the parent class
+        super().__post_init__()
+    
+
+    def update_title(self) -> bool:
+        self.title = f"Coin Flip {self.cursor_position + 1}/{self.return_after_n_chars}"
+        return True
+
+
+
+@dataclass
 class ToolsCalcFinalWordFinalizePromptScreen(ButtonListScreen):
     mnemonic_length: int = None
     num_entropy_bits: int = None
