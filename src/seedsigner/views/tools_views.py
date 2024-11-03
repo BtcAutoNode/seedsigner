@@ -28,7 +28,7 @@ logger = logging.getLogger(__name__)
 class ToolsMenuView(View):
     IMAGE = (" New seed", FontAwesomeIconConstants.CAMERA)
     DICE = ("New seed", FontAwesomeIconConstants.DICE)
-    COIN = ("New seed", FontAwesomeIconConstants.COINS)
+    COIN = (" New seed", FontAwesomeIconConstants.COINS)
     KEYBOARD = ("Calc 12th/24th word", FontAwesomeIconConstants.KEYBOARD)
     ADDRESS_EXPLORER = "Address Explorer"
     VERIFY_ADDRESS = "Verify address"
