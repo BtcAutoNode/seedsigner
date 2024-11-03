@@ -171,8 +171,8 @@ class ToolsCoinEntropyEntryScreen(KeyboardScreen):
         self.title = f"Coin Flip 1/{self.return_after_n_chars}"
 
         # Specify the keys in the keyboard
-        self.rows = 1
-        self.cols = 2
+        self.rows = 3
+        self.cols = 3
         self.keyboard_font_name = GUIConstants.ICON_FONT_NAME__FONT_AWESOME
         self.keyboard_font_size = None  # Force auto-scaling to Key height
         self.keys_charset = "".join([
