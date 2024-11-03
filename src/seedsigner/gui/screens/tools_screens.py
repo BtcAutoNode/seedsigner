@@ -176,8 +176,8 @@ class ToolsCoinEntropyEntryScreen(KeyboardScreen):
         self.keyboard_font_name = GUIConstants.ICON_FONT_NAME__FONT_AWESOME
         self.keyboard_font_size = None  # Force auto-scaling to Key height
         self.keys_charset = "".join([
-            FontAwesomeIconConstants.COIN_T,
             FontAwesomeIconConstants.COIN_H,
+            FontAwesomeIconConstants.COIN_T,
         ])
 
         # Map Key display chars to actual output values
