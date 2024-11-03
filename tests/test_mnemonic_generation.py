@@ -30,6 +30,29 @@ def test_dice_rolls():
 
 
 
+def test_coin_flips():
+    """ Given random coin flips, the resulting mnemonic should be valid. """
+    coin_flips = ""
+    for i in range(0, mnemonic_generation.COIN__NUM_FLIPS__24WORD):
+        # Do not need truly rigorous random for this test
+        coin_flips += str(random.randint(0, 1))
+
+    mnemonic = mnemonic_generation.generate_mnemonic_from_coin_flips(coin_flips)
+
+    assert len(mnemonic) == 24
+    assert bip39.mnemonic_is_valid(" ".join(mnemonic))
+
+    coin_flips = ""
+    for i in range(0, mnemonic_generation.COIN__NUM_FLIPS__12WORD):
+        # Do not need truly rigorous random for this test
+        coin_flips += str(random.randint(0, 1))
+
+    mnemonic = mnemonic_generation.generate_mnemonic_from_coin_flips(coin_flips)
+    assert len(mnemonic) == 12
+    assert bip39.mnemonic_is_valid(" ".join(mnemonic))
+
+
+
 def test_calculate_checksum_input_type():
     """
         Given an 11-word or 23-word mnemonic, the calculated checksum should yield a
@@ -195,3 +218,59 @@ def test_50_dice_rolls():
     actual = " ".join(mnemonic)
     assert bip39.mnemonic_is_valid(actual)
     assert actual == expected
+
+
+
+def test_256_coin_flips():
+    """ 256 coin flips input should yield the same 24-word mnemonic as iancoleman.io/bip39 """
+    # Check "Show entropy details", paste in coin flip sequence, click "Binary", select "Mnemonic Length" as "24 Words"
+    coin_flips = "1010101010101110110001000000001100100011000000000011000000001001110000000000000010000000000110000001110010110010000100110011001010101010101011101100010000000011001000110000000000110000000010011100000000000000100000000001100000011100101100100001001100110010"
+    expected = "grocery secret mountain turkey moment elbow size castle eagle water nominee general usual awesome attack daring cruise marriage debate tortoise document capital avocado engine"
+
+    mnemonic = mnemonic_generation.generate_mnemonic_from_coin_flips(coin_flips)
+    actual = " ".join(mnemonic)
+    assert bip39.mnemonic_is_valid(actual)
+    assert actual == expected
+
+    coin_flips = "0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+    expected = "gun library main saddle doctor meat pizza bone brave output matter chef merry flag abuse puppy first rotate era tent news arrest pepper finger"
+
+    mnemonic = mnemonic_generation.generate_mnemonic_from_coin_flips(coin_flips)
+    actual = " ".join(mnemonic)
+    assert bip39.mnemonic_is_valid(actual)
+    assert actual == expected
+
+    coin_flips = "1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111"
+    expected = "rural oval civil ignore moon glide any pony perfect gain stable flag fortune require roast stereo mad guitar page flat reduce give borrow leisure"
+
+    mnemonic = mnemonic_generation.generate_mnemonic_from_coin_flips(coin_flips)
+    actual = " ".join(mnemonic)
+    assert bip39.mnemonic_is_valid(actual)
+    assert actual == expected
+
+
+
+def test_128_dice_rolls():
+    """ 128 coin flips input should yield the same 12-word mnemonic as iancoleman.io/bip39 """
+    # Check "Show entropy details", paste in coin flip sequence, click "Binary", select "Mnemonic Length" as "12 Words"
+    coin_flips = "10101010101011101100010000000011001000110000000000110000000010011100000000000000100000000001100000011100101100100001001100110010"
+    expected = "prevent style echo subway next museum palace lobster toward office shoe unfair"
+    mnemonic = mnemonic_generation.generate_mnemonic_from_coin_flips(coin_flips)
+    actual = " ".join(mnemonic)
+    assert bip39.mnemonic_is_valid(actual)
+    assert actual == expected
+
+    coin_flips = "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+    expected = "earth naive tongue material rebel cotton credit quarter market peanut memory other"
+    mnemonic = mnemonic_generation.generate_mnemonic_from_coin_flips(coin_flips)
+    actual = " ".join(mnemonic)
+    assert bip39.mnemonic_is_valid(actual)
+    assert actual == expected
+
+    coin_flips = "11111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111"
+    expected = "exit pulp believe feature horror vehicle home more patrol hair drink resist"
+    mnemonic = mnemonic_generation.generate_mnemonic_from_coin_flips(coin_flips)
+    actual = " ".join(mnemonic)
+    assert bip39.mnemonic_is_valid(actual)
+    assert actual == expected
+    
