@@ -171,24 +171,27 @@ class ToolsCoinEntropyEntryScreen(KeyboardScreen):
         self.title = f"Coin Flip 1/{self.return_after_n_chars}"
 
         # Specify the keys in the keyboard
-        self.rows = 3
-        self.cols = 3
-        self.keyboard_font_name = GUIConstants.ICON_FONT_NAME__FONT_AWESOME
-        self.keyboard_font_size = None  # Force auto-scaling to Key height
+        self.rows = 2
+        self.cols = 2
+        self.key_height = GUIConstants.TOP_NAV_TITLE_FONT_SIZE + 2 + 2*GUIConstants.EDGE_PADDING
         self.keys_charset = "".join([
-            FontAwesomeIconConstants.COIN_H,
-            FontAwesomeIconConstants.COIN_T,
+            "H",
+            "T",
         ])
 
         # Map Key display chars to actual output values
         self.keys_to_values = {
-            FontAwesomeIconConstants.COIN_H: "1",
-            FontAwesomeIconConstants.COIN_T: "0",
+            "H": "1",
+            "T": "0",
         }
 
         # Now initialize the parent class
         super().__post_init__()
-    
+
+        self.components.append(TextArea(
+            text="(H)eads: 1   /   (T)ails: 0",
+            screen_y = self.keyboard.rect[3] + 3*GUIConstants.COMPONENT_PADDING,
+        ))
 
     def update_title(self) -> bool:
         self.title = f"Coin Flip {self.cursor_position + 1}/{self.return_after_n_chars}"
